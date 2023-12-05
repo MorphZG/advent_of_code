@@ -13,10 +13,9 @@ Advent of code 2022
 # itmes from a to z have value 1 to 26
 # items from A to Z have value 27 to 52
 # -- part 2
-# input is split in groups, each with 3 lines
-# find item common in every line of the group
-# not sure about this: "...at most two of the Elves will be carrying any other item type."
-
+# each group consists of three lines, each line is a group member
+# each member holds the id (badge), item type common for group members
+# find the id for each group
 
 from collections import Counter
 from string import ascii_letters as letters
