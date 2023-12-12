@@ -12,36 +12,32 @@ Advent of code 2022
 # each item have value, give the sum of common items
 # itmes from a to z have value 1 to 26
 # items from A to Z have value 27 to 52
-# -- part 2
-# each group consists of three lines, each line is a group member
-# each member holds the id (badge), item type common for group members
-# find the id for each group
 
 from collections import Counter
 from string import ascii_letters as letters
-from itertools import zip_longest
 
-# ---------- Part 1 ---------- 
+# ---------- Part 1 ----------
 
 solution: int = 0  # 7997
 
-# set the counter
-# a: 1, z: 26, A:27, Z: 52
-counter = Counter(letters)
-value = 0
-for char, base in counter.items():
-    counter[char] += value
-    value += 1
+
+def get_score(char: str) -> int:
+    # construct the counter
+    # a: 1, z: 26, A:27, Z: 52
+    counter = Counter(letters)
+    value = 0
+    for key in counter.keys():
+        counter[key] += value
+        value += 1
+    return counter[char]
 
 
 # read the input file
 with open("input") as file:
-    content = file.readlines()
+    # read() as single large string, splitlines() on every white space
+    content = file.read().splitlines()
 # split the each string to left and right half
-all_items = []
-matching_letters = []
 for line in content:
-    line = line.rsplit("\n")[0]  # removes the \n from string
     n = len(line)
     if n % 2 == 1:
         print("Item is not even after split")
@@ -49,53 +45,43 @@ for line in content:
         print("\n----- Next item -----")
         leftCompartment = line[0 : n // 2]
         rightCompartment = line[n // 2 :]
-        left_right = []
-        left_right.append(leftCompartment)
-        left_right.append(rightCompartment)
-        all_items.append(left_right)
         print(f"left: {leftCompartment}\nright: {rightCompartment}")
-        # list the common letters in left and right compartment
+        # list the common letter in left and right compartment
         for letter in leftCompartment:
             if letter in rightCompartment:
-                matching_letters.append(letter)
-                solution += counter[letter]
-                print(f"match: {letter}, score: +{counter[letter]}")
-                break # prevents duplicates, when match is find go to next item
+                solution += get_score(letter)
+                print(f"match: {letter}, score: +{get_score(letter)}")
+                # when match is found go to next item, prevent duplicates
+                break
 
-print(f"\ntotal score: {solution}\n")
-
-# ---------- Part 2 ---------- 
-
-solution: int = 0  # 0000
-
-def grouper(iterable, n, *, incomplete='strict', fillvalue=None):
-    "Collect data into non-overlapping fixed-length chunks or blocks"
-    # grouper('ABCDEFG', 3, fillvalue='x') --> ABC DEF Gxx
-    # grouper('ABCDEFG', 3, incomplete='strict') --> ABC DEF ValueError
-    # grouper('ABCDEFG', 3, incomplete='ignore') --> ABC DEF
-    args = [iter(iterable)] * n
-    if incomplete == 'fill':
-        return zip_longest(*args, fillvalue=fillvalue)
-    if incomplete == 'strict':
-        return zip(*args, strict=True)
-    if incomplete == 'ignore':
-        return zip(*args)
-    else:
-        raise ValueError('Expected fill, strict, or ignore')
+print(f"\nPart 1, solution: {solution}")
 
 
-# separate full and clean lines
-full_lines = []
-for line in content:
-    full_lines.append(line.rsplit("\n")[0])  # remove \n and apend to list
+# ---------- Part 2 ----------
+# each group consists of three lines, each line is a group member
+# each line holds the group id (badge), item type common for all three lines in a group
+# find the group id of all groups
+# count the score using the values from part 1
 
-# build groups of 3 lines
-test = grouper(full_lines, n=3)
-for group in test:
-    print(group)
+solution: int = 0  # 2545
 
+# construct the groups of three lines
+groups = []
+for i in range(0, len(content), 3):
+    # i is every third index
+    # slice from content[i] to content[i+3]
+    groups.append(content[i : i + 3])
 
+for group in groups:
+    line1 = group[0]
+    line2 = group[1]
+    line3 = group[2]
+    for char in line1:
+        if char in line2 and char in line3:
+            solution += get_score(char)
+            break
 
+print(f"\nPart 2, solution: {solution}\n")
 
 #modules: collections
 #tags: exercise
