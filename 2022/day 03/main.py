@@ -16,10 +16,8 @@ Advent of code 2022
 from collections import Counter
 from string import ascii_letters as letters
 
-# ---------- Part 1 ----------
 
 solution: int = 0  # 7997
-
 
 def get_score(char: str) -> int:
     # construct the counter
@@ -55,7 +53,6 @@ for line in content:
                 break
 
 print(f"\nPart 1, solution: {solution}")
-
 
 # ---------- Part 2 ----------
 # each group consists of three lines, each line is a group member
